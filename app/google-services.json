@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "399029745569",
+    "project_id": "firebase-goodhere"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399029745569:android:574cfdc3c82a94a2",
+        "android_client_info": {
+          "package_name": "com.danielburer.goodhere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399029745569-9euhn1blq19un85pmo7qh1nokq00npn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danielburer",
+            "certificate_hash": "80d8fda9eef6bba6f370d9bfce266b0c175b6e24"
+          }
+        },
+        {
+          "client_id": "399029745569-i6uugfpak7ps0ughc6e9q7724gd8p5kt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgwA78mpaRG5q8XssKDCj_YJUxd7oYaDs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.danielburer.whatsgood"
+        applicationId "com.danielburer.goodhere"
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
@@ -27,4 +27,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
     compile('com.amazonaws:aws-android-sdk-core:2.3.9')
+    compile project(':AWSMobileHelper')
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    apply plugin: 'com.google.gms.google-services'
 }

@@ -1,1 +1,2 @@
+include ':AWSMobileHelper'
 include ':app'
