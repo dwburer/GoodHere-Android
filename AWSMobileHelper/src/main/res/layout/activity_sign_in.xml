@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    tools:context=".auth.signin.SignInActivity"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        >
+    <com.amazonaws.mobilehelper.auth.signin.buttons.GoogleButton
+        android:id="@+id/g_login_button"
+        android:layout_width="@dimen/sign_in_button_width"
+        android:layout_height="@dimen/sign_in_button_height"
+        android:layout_marginTop="@dimen/sign_in_button_margin"
+        android:layout_marginBottom="@dimen/sign_in_button_margin"
+        android:padding="0dp"/>
+    </LinearLayout>
+</RelativeLayout>
