@@ -166,9 +166,9 @@ public class MainActivity extends AppCompatActivity {
                             responseTitles.addAll(reponseListDetail.keySet());
 
                             expandableListTitle.clear();
-                            expandableListTitle = responseTitles;
+                            expandableListTitle.addAll(responseTitles);
                             expandableListDetail.clear();
-                            expandableListDetail = reponseListDetail;
+                            expandableListDetail.putAll(reponseListDetail);
                             expandableListAdapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
