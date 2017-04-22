@@ -34,7 +34,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".StartActivity"
+            android:name=".MainTabActivity"
             android:label="@string/title_activity_start"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

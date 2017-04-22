@@ -19,6 +19,9 @@ import com.amazonaws.mobilehelper.auth.StartupAuthErrorDetails;
 import com.amazonaws.mobilehelper.auth.StartupAuthResult;
 import com.amazonaws.mobilehelper.auth.StartupAuthResultHandler;
 
+/**
+ * Get basic permissions here...?
+ */
 public class SplashActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = Application.class.getSimpleName();
