@@ -1,8 +1,12 @@
 package com.danielburer.goodhere;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +31,9 @@ public class TabSearchFragment extends Fragment {
 
     // TODO: real names for these
     ExpandableListView expandableListView;
-    CustomExpandableListAdapter expandableListAdapter;
+    EstablishmentExpandableListAdapter expandableListAdapter;
     List<String> expandableListTitle;
+    HashMap<String, Integer> expandableListPk;
     HashMap<String, List<String>> expandableListDetail;
 
     @Override
@@ -42,18 +47,41 @@ public class TabSearchFragment extends Fragment {
 
         expandableListView = (ExpandableListView) getView().findViewById(R.id.lv_search);
         expandableListDetail = ExpandableListDataPump.getData();
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(getActivity(), expandableListTitle, expandableListDetail);
+        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
+        expandableListPk = new HashMap<>();
+        expandableListAdapter = new EstablishmentExpandableListAdapter(getActivity(), expandableListTitle, expandableListPk, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
 
-        // TODO: Do something useful with these
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(getActivity().getApplicationContext(),
-                        expandableListTitle.get(groupPosition) + " List Expanded.",
+                        expandableListTitle.get(groupPosition) + " List Expanded. PK: " + expandableListPk.get(expandableListTitle.get(groupPosition)),
                         Toast.LENGTH_SHORT).show();
+
+                // Intent for the activity to open when user selects the notification
+                Intent detailsIntent = new Intent(getActivity(), EstablishmentDetailActivity.class);
+                Log.d("what?", "" + expandableListPk.get(expandableListTitle.get(groupPosition)));
+                detailsIntent.putExtra("establishmentPK", expandableListPk.get(expandableListTitle.get(groupPosition)));
+                Intent mainIntent = new Intent(getActivity(), MainTabActivity.class);
+
+                // Use TaskStackBuilder to build the back stack and get the PendingIntent
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(getActivity())
+                                // add all of DetailsActivity's parents to the stack,
+                                // followed by DetailsActivity itself
+                                .addNextIntentWithParentStack(mainIntent)
+                                .addNextIntentWithParentStack(detailsIntent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
+                builder.setContentIntent(pendingIntent);
+                try {
+                    pendingIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -99,6 +127,7 @@ public class TabSearchFragment extends Fragment {
                     public void onResponse(JSONObject response) {
 
                         ArrayList<String> responseTitles = new ArrayList<>();
+                        HashMap<String, Integer> responsePks = new HashMap<>();
                         HashMap<String, List<String>> reponseListDetail = new HashMap<>();
 
                         try {
@@ -106,7 +135,7 @@ public class TabSearchFragment extends Fragment {
                             for(int i = 0; i < data.length(); i++) {
 
                                 JSONObject establishment = data.getJSONObject(i);
-                                String title = establishment.getString("name");
+                                String title = establishment.getString("name") + establishment.getInt("pk");
 
                                 ArrayList<String> products = new ArrayList<>();
                                 JSONArray responseProducts = establishment.getJSONArray("products");
@@ -115,6 +144,7 @@ public class TabSearchFragment extends Fragment {
                                 }
 
                                 reponseListDetail.put(title, products);
+                                responsePks.put(title, establishment.getInt("pk"));
                             }
 
                             responseTitles.clear();
@@ -122,6 +152,8 @@ public class TabSearchFragment extends Fragment {
 
                             expandableListTitle.clear();
                             expandableListTitle.addAll(responseTitles);
+                            expandableListPk.clear();
+                            expandableListPk.putAll(responsePks);
                             expandableListDetail.clear();
                             expandableListDetail.putAll(reponseListDetail);
                             expandableListAdapter.notifyDataSetChanged();

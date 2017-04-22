@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">GoodHere</string>
     <string name="title_activity_splash">SplashActivity</string>
-    <string name="title_activity_start">StartActivity</string>
+    <string name="title_activity_start">GoodHere</string>
+    <string name="title_activity_est_detail">Details</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_tab_search">Search</string>
     <string name="title_tab_nearby">Nearby</string>

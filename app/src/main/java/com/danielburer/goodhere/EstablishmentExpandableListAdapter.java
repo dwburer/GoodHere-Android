@@ -12,20 +12,19 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by daniel on 4/20/17.
- */
-
-public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
+public class EstablishmentExpandableListAdapter extends BaseExpandableListAdapter {
 
         private Context context;
         private List<String> expandableListTitle;
+        private HashMap<String, Integer> expandableListPk;
         private HashMap<String, List<String>> expandableListDetail;
 
-        public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
-                HashMap<String, List<String>> expandableListDetail) {
+        public EstablishmentExpandableListAdapter(Context context, List<String> expandableListTitle,
+                                                  HashMap<String, Integer> expandableListPk,
+                                                  HashMap<String, List<String>> expandableListDetail) {
             this.context = context;
             this.expandableListTitle = expandableListTitle;
+            this.expandableListPk = expandableListPk;
             this.expandableListDetail = expandableListDetail;
         }
 
