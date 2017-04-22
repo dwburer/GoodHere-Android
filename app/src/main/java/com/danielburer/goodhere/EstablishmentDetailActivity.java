@@ -1,9 +1,12 @@
 package com.danielburer.goodhere;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,6 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +56,18 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                             JSONArray responseProducts = response.getJSONArray("products");
                             for(int j = 0; j < responseProducts.length(); j++) {
                                 newProducts.add(responseProducts.getString(j));
+                            }
+
+                            String imageUrl = response.getString("brand_image");
+
+                            try {
+                                ImageView i = (ImageView)findViewById(R.id.brand_image);
+                                Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
+                                i.setImageBitmap(bitmap);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
 
                             productNames.clear();
