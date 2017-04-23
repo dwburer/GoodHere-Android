@@ -8,14 +8,12 @@ import android.view.ViewGroup;
 
 public class TabProfileFragmentAuthenticated extends Fragment {
 
-    static FirstPageFragmentListener firstPageListener;
+    static ProfileFragmentListener profileListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
-        firstPageListener = (FirstPageFragmentListener) args.get("listener");
+        profileListener = (ProfileFragmentListener) args.get("listener");
         return inflater.inflate(R.layout.tab_profile_fragment_authenticated, container, false);
     }
-
-//    firstPageListener.onSwitchToNextFragment();
 }

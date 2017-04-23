@@ -29,14 +29,14 @@ import java.util.Map;
 
 public class TabProfileFragmentDefault extends Fragment {
 
-    static FirstPageFragmentListener firstPageListener;
+    static ProfileFragmentListener profileListener;
     private EditText username, password;
     private Button login;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
-        firstPageListener = (FirstPageFragmentListener) args.get("listener");
+        profileListener = (ProfileFragmentListener) args.get("listener");
         return inflater.inflate(R.layout.tab_profile_fragment_default, container, false);
     }
 
@@ -58,7 +58,6 @@ public class TabProfileFragmentDefault extends Fragment {
 
     private void login() {
 
-
         final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         final String base_url = sharedPref.getString(getString(R.string.server_api_url), "");
         final String appID = sharedPref.getString(getString(R.string.client_id_key), "");
@@ -76,19 +75,16 @@ public class TabProfileFragmentDefault extends Fragment {
                     editor.putBoolean(getString(R.string.client_authenticated_key), true);
                     editor.apply();
 
-                    firstPageListener.onSwitchToNextFragment();
+                    profileListener.onSwitchToNextFragment();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("volley", error.toString());
             }
-
         }) {
             @Override
             public byte[] getBody() {
@@ -123,8 +119,6 @@ public class TabProfileFragmentDefault extends Fragment {
 
     /**
      * This method was private in the com.Android.Volley.Request class. I had to copy it here so as to encode my parameters.
-     * @param params
-     * @param paramsEncoding
      */
     private byte[] encodeParameters(Map<String, String> params, String paramsEncoding) {
         StringBuilder encodedParams = new StringBuilder();

@@ -1,64 +1,79 @@
 package com.danielburer.goodhere;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
+import android.view.View;
 
 import java.io.Serializable;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
+
+    private final FragmentManager mFragmentManager;
     private int mNumOfTabs;
+
+    private ProfilePageListener listener = new ProfilePageListener();
+    private Fragment profileFragment;
+    private Bundle profileFragmentArgs = new Bundle();
+    private Context mContext;
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         mFragmentManager = fm;
-        args.putSerializable("listener", listener);
+        profileFragmentArgs.putSerializable("listener", listener);
     }
 
-    private final class FirstPageListener implements FirstPageFragmentListener, Serializable {
+    /**
+     * This is basically just used to toggle between the default and authenticated
+     * profile fragments. Can probably streamline or abstract for wider use cases.
+     */
+    private final class ProfilePageListener implements ProfileFragmentListener, Serializable {
         public void onSwitchToNextFragment() {
 
             mFragmentManager.beginTransaction().remove(profileFragment).commit();
             if (profileFragment instanceof TabProfileFragmentDefault){
                 profileFragment = new TabProfileFragmentAuthenticated();
-                profileFragment.setArguments(args);
+                profileFragment.setArguments(profileFragmentArgs);
             }else {
                 profileFragment = new TabProfileFragmentDefault();
-                profileFragment.setArguments(args);
+                profileFragment.setArguments(profileFragmentArgs);
             }
             notifyDataSetChanged();
         }
     }
 
-    private FirstPageListener listener = new FirstPageListener();
-    private final FragmentManager mFragmentManager;
-    private Fragment profileFragment;
-    private Bundle args = new Bundle();
-
     @Override
     public Fragment getItem(int position) {
 
+        SharedPreferences sharedPref = mContext.getSharedPreferences("myPrefs", 0);
+
         switch (position) {
             case 0:
-                TabSearchFragment tab1 = new TabSearchFragment();
-                return tab1;
+                return new TabSearchFragment();
+
             case 1:
-                TabNearbyFragment tab2 = new TabNearbyFragment();
-                return tab2;
+                return new TabNearbyFragment();
+
             case 2:
-                if (profileFragment == null)
-                {
-                    profileFragment = new TabProfileFragmentDefault();
-                    profileFragment.setArguments(args);
+
+                boolean authenticated = sharedPref.getBoolean(mContext.getString(R.string.client_authenticated_key), false);
+                if (profileFragment == null) {
+                    profileFragment = authenticated ? new TabProfileFragmentDefault() : new TabProfileFragmentAuthenticated();
+                    profileFragment.setArguments(profileFragmentArgs);
                 }
+
                 return profileFragment;
             default:
                 return null;
         }
+    }
+
+    public void setContext(Context c){
+        mContext = c;
     }
 
     @Override
@@ -66,6 +81,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         return mNumOfTabs;
     }
 
+    // Not sure if this is entirely needed yet.
     @Override
     public int getItemPosition(Object object)
     {

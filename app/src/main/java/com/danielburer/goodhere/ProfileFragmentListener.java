@@ -1,5 +1,5 @@
 package com.danielburer.goodhere;
 
-public interface FirstPageFragmentListener{
+public interface ProfileFragmentListener {
     void onSwitchToNextFragment();
 }
