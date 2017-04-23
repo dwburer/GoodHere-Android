@@ -1,12 +1,15 @@
 package com.danielburer.goodhere;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TabSearchFragment extends Fragment {
 
@@ -116,12 +121,12 @@ public class TabSearchFragment extends Fragment {
     }
 
     public void getEstablishments() {
-        String url = "http://10.0.2.2:8001/api/v1/establishments/";
-
-
+        final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
+        String query_url = String.format("%sestablishments/", base_url);
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, query_url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -169,7 +174,17 @@ public class TabSearchFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("volley", error.toString());
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                String token = sharedPref.getString(getString(R.string.client_saved_token_key), "");
+                String auth = "Bearer " + token;
+                params.put("Authorization", auth);
+                return params;
+            }
+        };
 
         // Access the RequestQueue through our QueueSingleton class.
         QueueSingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest);

@@ -7,4 +7,14 @@
     <string name="title_tab_search">Search</string>
     <string name="title_tab_nearby">Nearby</string>
     <string name="title_tab_profile">Profile</string>
+    <!-- DRF -->
+    <string name="server_api_url">server_api</string>
+    <!-- auth -->
+    <string name="client_id_key">client_id</string>
+    <string name="client_secret_key">client_secret</string>
+    <string name="client_saved_token_key">auth_token</string>
+    <string name="client_authenticated_key">client_authenticated</string>
+    <!-- auth -->
+    <string name="title_login_panel">You must log in first.</string>
+    <string name="title_login_sign_up">Don\'t have an account?</string>
 </resources>
