@@ -3,9 +3,11 @@ package com.danielburer.goodhere;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 import android.view.View;
 
 import java.io.Serializable;
@@ -49,7 +51,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        SharedPreferences sharedPref = mContext.getSharedPreferences("myPrefs", 0);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         switch (position) {
             case 0:
@@ -61,8 +63,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 2:
 
                 boolean authenticated = sharedPref.getBoolean(mContext.getString(R.string.client_authenticated_key), false);
+
+                Log.d("adapter", authenticated + "");
+
                 if (profileFragment == null) {
-                    profileFragment = authenticated ? new TabProfileFragmentDefault() : new TabProfileFragmentAuthenticated();
+                    profileFragment = !authenticated ? new TabProfileFragmentDefault() : new TabProfileFragmentAuthenticated();
                     profileFragment.setArguments(profileFragmentArgs);
                 }
 

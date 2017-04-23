@@ -1,7 +1,10 @@
 package com.danielburer.goodhere;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EstablishmentDetailActivity extends AppCompatActivity {
 
@@ -41,52 +46,59 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, productNames);
         products.setAdapter(adapter);
 
-        String url = String.format("http://10.0.2.2:8001/api/v1/establishments/%d/", getIntent().getIntExtra("establishmentPK", 0));
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
+        String query_url = String.format("%sestablishments/%d/", base_url, getIntent().getIntExtra("establishmentPK", 0));
 
-                    @Override
-                    public void onResponse(JSONObject response) {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.GET, query_url, null, new Response.Listener<JSONObject>() {
 
-                        try {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    name.setText(response.getString("name"));
 
-                            name.setText(response.getString("name"));
-
-                            ArrayList<String> newProducts = new ArrayList<>();
-                            JSONArray responseProducts = response.getJSONArray("products");
-                            for(int j = 0; j < responseProducts.length(); j++) {
-                                newProducts.add(responseProducts.getString(j));
-                            }
-
-                            String imageUrl = response.getString("brand_image");
-
-                            try {
-                                ImageView i = (ImageView)findViewById(R.id.brand_image);
-                                Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
-                                i.setImageBitmap(bitmap);
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            productNames.clear();
-                            productNames.addAll(newProducts);
-
-                            adapter.notifyDataSetChanged();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    ArrayList<String> newProducts = new ArrayList<>();
+                    JSONArray responseProducts = response.getJSONArray("products");
+                    for(int j = 0; j < responseProducts.length(); j++) {
+                        newProducts.add(responseProducts.getString(j));
                     }
 
-                }, new Response.ErrorListener() {
+                    String imageUrl = response.getString("brand_image");
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("volley", error.toString());
+                    try {
+                        ImageView i = (ImageView)findViewById(R.id.brand_image);
+                        Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
+                        i.setImageBitmap(bitmap);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
+
+                    productNames.clear();
+                    productNames.addAll(newProducts);
+                    adapter.notifyDataSetChanged();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("volley", error.toString());
+            }
+
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                String token = sharedPref.getString(getString(R.string.client_saved_token_key), "");
+                String auth = "Bearer " + token;
+                params.put("Authorization", auth);
+                return params;
+            }
+        };
 
         // Access the RequestQueue through our QueueSingleton class.
         QueueSingleton.getInstance(this).addToRequestQueue(jsObjRequest);

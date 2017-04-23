@@ -3,6 +3,7 @@ package com.danielburer.goodhere;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -58,7 +59,7 @@ public class TabProfileFragmentDefault extends Fragment {
 
     private void login() {
 
-        final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final String base_url = sharedPref.getString(getString(R.string.server_api_url), "");
         final String appID = sharedPref.getString(getString(R.string.client_id_key), "");
         final String appSecret = sharedPref.getString(getString(R.string.client_secret_key), "");

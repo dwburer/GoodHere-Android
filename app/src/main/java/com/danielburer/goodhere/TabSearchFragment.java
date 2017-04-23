@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -121,7 +122,7 @@ public class TabSearchFragment extends Fragment {
     }
 
     public void getEstablishments() {
-        final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
         String query_url = String.format("%sestablishments/", base_url);
 
