@@ -6,6 +6,7 @@ CSCI-5331 Final Project
 We'll keep a rough record of changes and tasks here. If you want to add something, just add another line under one of our names.
 
 #### Danny
+- [x] Get voting to work, layout visual framework for UI and outline database models.
 - [ ] Get `GoodHere-Backened` deployed to AWS (Elasic Beanstalk)
 - [ ] Set up database with Amazon RDS - may be handled automatically with EB, probably want to configure ourselves anyway
 - [ ] Polish up `EstablishmentDetailView`, including voting interface.
