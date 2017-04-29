@@ -34,22 +34,32 @@ import java.util.Map;
 
 public class EstablishmentDetailActivity extends AppCompatActivity {
 
+    private TextView name;
+    private ArrayList<Product> productsPrepped;
+    private ListView products;
+    private ProductListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_establishment_detail);
 
-        final TextView name = (TextView) findViewById(R.id.tv_estDetailName);
+        name = (TextView) findViewById(R.id.tv_estDetailName);
 
-        final ArrayList<String> productNames = new ArrayList<>();
-        final ListView products = (ListView) findViewById(R.id.lv_estDetailProducts);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, productNames);
+        productsPrepped = new ArrayList<>();
+        products = (ListView) findViewById(R.id.lv_estDetailProducts);
+        adapter = new ProductListAdapter(this, R.layout.atom_pay_list_item, productsPrepped);
         products.setAdapter(adapter);
 
+        queryEstablishments();
+    }
+
+    public void queryEstablishments() {
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
         String query_url = String.format("%sestablishments/%d/", base_url, getIntent().getIntExtra("establishmentPK", 0));
 
+        // Query establishment for details and products.
         JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.GET, query_url, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -57,10 +67,16 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                 try {
                     name.setText(response.getString("name"));
 
-                    ArrayList<String> newProducts = new ArrayList<>();
+                    ArrayList<Product> newProducts = new ArrayList<>();
                     JSONArray responseProducts = response.getJSONArray("products");
+
                     for(int j = 0; j < responseProducts.length(); j++) {
-                        newProducts.add(responseProducts.getString(j));
+                        JSONObject newProd = responseProducts.getJSONObject(j);
+                        String name = newProd.getString("name");
+                        String owner = newProd.getString("owner");
+                        int pk = newProd.getInt("pk");
+                        int votes = newProd.getInt("votes");
+                        newProducts.add(new Product(name, owner, pk, votes));
                     }
 
                     String imageUrl = response.getString("brand_image");
@@ -75,8 +91,8 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    productNames.clear();
-                    productNames.addAll(newProducts);
+                    productsPrepped.clear();
+                    productsPrepped.addAll(newProducts);
                     adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {

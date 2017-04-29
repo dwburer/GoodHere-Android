@@ -68,7 +68,6 @@ public class TabSearchFragment extends Fragment {
 
                 // Intent for the activity to open when user selects the notification
                 Intent detailsIntent = new Intent(getActivity(), EstablishmentDetailActivity.class);
-                Log.d("what?", "" + expandableListPk.get(expandableListTitle.get(groupPosition)));
                 detailsIntent.putExtra("establishmentPK", expandableListPk.get(expandableListTitle.get(groupPosition)));
                 Intent mainIntent = new Intent(getActivity(), MainTabActivity.class);
 
@@ -141,7 +140,7 @@ public class TabSearchFragment extends Fragment {
                             for(int i = 0; i < data.length(); i++) {
 
                                 JSONObject establishment = data.getJSONObject(i);
-                                String title = establishment.getString("name") + establishment.getInt("pk");
+                                String title = establishment.getString("name");
 
                                 ArrayList<String> products = new ArrayList<>();
                                 JSONArray responseProducts = establishment.getJSONArray("products");
