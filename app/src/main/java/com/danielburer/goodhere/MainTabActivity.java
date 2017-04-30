@@ -21,7 +21,7 @@ public class MainTabActivity extends AppCompatActivity {
         // Setup app ID and secret for communication with Django
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.server_api_url), "http://10.0.2.2:8001/api/v1/");
+        editor.putString(getString(R.string.server_api_url), "http://1ec42240.ngrok.io/api/v1/");
         editor.putString(getString(R.string.client_id_key), "bEgw6lU7JwWKsqpR947DXocYVtxer57VIC5WwwDi");
         editor.putString(getString(R.string.client_secret_key), "9zG0IlrEEXIdo0YBp6otvaM8ZJqWQ3gYf4Xc6eg4z2GKPjS9HdSGP0c0xXcQK895L3mKrGmd1L3y7ZPflQiSnEk2dlUxdl63yV9CNaya2kKGp78FYvyFchIFVZOFEs8t");
         editor.putBoolean(getString(R.string.client_authenticated_key), false);

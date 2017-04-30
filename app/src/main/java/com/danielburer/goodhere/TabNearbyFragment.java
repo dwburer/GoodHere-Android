@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
@@ -39,7 +41,7 @@ import com.google.android.gms.location.LocationServices;
 
 
 public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener,LocationListener{
 
     MapView mMapView;
     private GoogleMap googleMap;
@@ -56,6 +58,7 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
     //Last known location
     private Location mLastKnownLocation;
+    private LocationRequest mLocationRequest;
 
     //Store State
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -94,41 +97,34 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
-                // For showing a move to my location button
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
+                if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED){
+                    mLocationPermissionGranted = true;
                 }
+
+                else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                }
+
                 googleMap.setMyLocationEnabled(true);
 
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//                getDeviceLocation();
+//
+//                LatLng sydney = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
+//
+//                // For zooming automatically to the location of the marker
+//                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
 
         //Build Google Play Services client
         mGoogleApiClient = new GoogleApiClient.Builder(this.getContext())
-//                .enableAutoManage(,this)
                 .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
-
-//        mGoogleApiClient.connect();
-
 
         return rootView;
     }
@@ -162,6 +158,7 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
         SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -190,10 +187,9 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 return null;
             }
         });
-
-        updateLocationUI();
-
-        getDeviceLocation();
+//        updateLocationUI();
+//
+//        getDeviceLocation();
 
     }
 
@@ -340,13 +336,32 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
     }
 
     public void onStart() {
-        super.onStart();
         mGoogleApiClient.connect();
+        super.onStart();
     }
 
     public void onStop(){
-        super.onStop();
         mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
