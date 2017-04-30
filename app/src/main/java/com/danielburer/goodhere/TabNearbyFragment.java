@@ -109,13 +109,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
                 googleMap.setMyLocationEnabled(true);
 
-//                getDeviceLocation();
-//
-//                LatLng sydney = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
-//
-//                // For zooming automatically to the location of the marker
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
 
