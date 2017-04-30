@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,15 +19,20 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -38,6 +44,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
@@ -70,6 +78,10 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
     private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
     private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
     private LatLng[] mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
+
+    int PLACE_PICKER_REQUEST = 1;
+
+    Place selectedPlace;
 
 
     @Override
@@ -118,6 +130,8 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+
+        closePlace();
 
         return rootView;
     }
@@ -180,9 +194,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 return null;
             }
         });
-//        updateLocationUI();
-//
-//        getDeviceLocation();
 
     }
 
@@ -357,4 +368,41 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
     public void onProviderDisabled(String provider) {
 
     }
+
+    public void closePlace(){
+
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(this.getActivity()),PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == PLACE_PICKER_REQUEST){
+
+            if(resultCode == RESULT_OK) {
+
+                selectedPlace = PlacePicker.getPlace(this.getContext(),data);
+
+                String toast = String.format("Place: %s", selectedPlace.getName());
+
+                Toast.makeText(this.getContext(),toast, Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+    }
+
+
+
+
+
+
 }
