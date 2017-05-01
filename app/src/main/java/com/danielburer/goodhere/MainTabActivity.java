@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import java.io.Serializable;
 
@@ -66,21 +67,13 @@ public class MainTabActivity extends AppCompatActivity {
         });
     }
 
-    // Figure out what this does????
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//      getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
-    // Figure out what this does????
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 }

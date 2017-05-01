@@ -29,12 +29,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EstablishmentDetailActivity extends AppCompatActivity {
 
-    private ProgressBar loader;
     private TextView estName;
     private ImageView estBrandImage;
     private LinearLayout estDetail;
@@ -53,13 +53,9 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
         adapter = new ProductListAdapter(this, R.layout.atom_pay_list_item, productsPrepped);
         products.setAdapter(adapter);
 
-        loader = (ProgressBar) findViewById(R.id.progress_spinner);
         estName = (TextView) findViewById(R.id.tv_estDetailName);
         estBrandImage = (ImageView)findViewById(R.id.brand_image);
         estDetail = (LinearLayout) findViewById(R.id.product_list);
-
-//        estBrandImage.setVisibility(View.GONE);
-        estDetail.setVisibility(View.GONE);
 
         queryEstablishments();
     }
@@ -102,15 +98,12 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    Collections.sort(newProducts, Collections.reverseOrder());
                     productsPrepped.clear();
                     productsPrepped.addAll(newProducts);
                     adapter.notifyDataSetChanged();
 
                     Log.d("volley", "should be setting visibilities..");
-
-//                    loader.setVisibility(View.GONE);
-                    estBrandImage.setVisibility(View.VISIBLE);
-                    estDetail.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

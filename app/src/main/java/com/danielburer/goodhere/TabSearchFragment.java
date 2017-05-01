@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,7 @@ public class TabSearchFragment extends Fragment {
     ListView estListView;
     ArrayList<Establishment> establishments;
     ArrayAdapter<Establishment> adapter;
+    SearchView search;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +54,6 @@ public class TabSearchFragment extends Fragment {
         establishments = new ArrayList<>();
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, establishments);
         estListView.setAdapter(adapter);
-
 
         estListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -82,13 +84,27 @@ public class TabSearchFragment extends Fragment {
             }
         });
 
-        getEstablishments();
+        search = (SearchView) getView().findViewById(R.id.sv_search);
+        search.setIconified(false);
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                getEstablishments(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                getEstablishments(newText);
+                return false;
+            }
+        });
     }
 
-    public void getEstablishments() {
+    public void getEstablishments(String query) {
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
-        String query_url = String.format("%sestablishments/", base_url);
+        String query_url = String.format("%ssearch/?query=%s", base_url, query);
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, query_url, null, new Response.Listener<JSONObject>() {

@@ -1,6 +1,8 @@
 package com.danielburer.goodhere;
 
-public class Product {
+import android.support.annotation.NonNull;
+
+public class Product implements Comparable<Product>{
     private String name;
     private String owner;
     private int pk;
@@ -35,10 +37,27 @@ public class Product {
         return score;
     }
 
+    public float getPercent() {
+        try {
+            return (this.score / (float)this.votes);
+        } catch (ArithmeticException e) {
+            return 0;
+        }
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NonNull Product o) {
+        if (this.getPercent() < o.getPercent())
+            return -1;
+        else if (this.getPercent() > o.getPercent())
+            return 1;
+        return 0;
     }
 }

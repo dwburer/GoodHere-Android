@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
     }
 
     private void setupItem(final ProductHolder holder) {
-        holder.name.setText(holder.product.getName());
+        holder.name.setText(String.format("%s - %d%%", holder.product.getName(), (int)(holder.product.getPercent() * 100)));
         holder.score.setMax(holder.product.getVotes());
         holder.score.setProgress(holder.product.getScore());
         holder.voteUp.setOnClickListener(new View.OnClickListener() {
