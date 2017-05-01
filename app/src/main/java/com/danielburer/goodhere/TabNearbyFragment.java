@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +46,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+
+import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -120,6 +124,13 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
                 googleMap.setMyLocationEnabled(true);
 
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        closePlace();
+                    }
+                });
+
             }
         });
 
@@ -130,8 +141,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
 
-        closePlace();
-
         return rootView;
     }
 
@@ -139,6 +148,7 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+
     }
 
     @Override
@@ -341,6 +351,7 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
+
     }
 
     public void onStop(){
@@ -393,7 +404,7 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 //String toast = String.format("Place: %s", selectedPlace.getName());
 
                 String toast = "Place: " + selectedPlace.getName() + "\n"
-                + selectedPlace.getAddress() + "\n";
+                + selectedPlace.getAddress() + "\n" + selectedPlace.getId();
 
                 Toast.makeText(this.getContext(),toast, Toast.LENGTH_LONG).show();
 
@@ -405,9 +416,10 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
     }
 
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
 
-
-
-
+    }
 
 }

@@ -26,7 +26,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         mFragmentManager = fm;
-        profileFragmentArgs.putSerializable("listener", listener);
+//        profileFragmentArgs.putSerializable("listener", listener);
     }
 
     /**
