@@ -1,18 +1,17 @@
 package com.danielburer.goodhere;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -31,12 +30,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EstablishmentDetailActivity extends AppCompatActivity {
 
-    private TextView name;
+    private ProgressBar loader;
+    private TextView estName;
+    private ImageView estBrandImage;
+    private LinearLayout estDetail;
+
     private ArrayList<Product> productsPrepped;
     private ListView products;
     private ProductListAdapter adapter;
@@ -46,12 +48,18 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_establishment_detail);
 
-        name = (TextView) findViewById(R.id.tv_estDetailName);
-
         productsPrepped = new ArrayList<>();
         products = (ListView) findViewById(R.id.lv_estDetailProducts);
         adapter = new ProductListAdapter(this, R.layout.atom_pay_list_item, productsPrepped);
         products.setAdapter(adapter);
+
+        loader = (ProgressBar) findViewById(R.id.progress_spinner);
+        estName = (TextView) findViewById(R.id.tv_estDetailName);
+        estBrandImage = (ImageView)findViewById(R.id.brand_image);
+        estDetail = (LinearLayout) findViewById(R.id.product_list);
+
+//        estBrandImage.setVisibility(View.GONE);
+        estDetail.setVisibility(View.GONE);
 
         queryEstablishments();
     }
@@ -67,7 +75,7 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    name.setText(response.getString("name"));
+                    estName.setText(response.getString("name"));
 
                     ArrayList<Product> newProducts = new ArrayList<>();
                     JSONArray responseProducts = response.getJSONArray("products");
@@ -87,9 +95,6 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                     try {
                         ImageView i = (ImageView)findViewById(R.id.brand_image);
                         Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
-
-//                        FrameLayout brandImageContainer = (FrameLayout)findViewById(R.id.brand_image_container);
-//                        brandImageContainer.setBackground(new BitmapDrawable(getResources(), bitmap));
                         i.setImageBitmap(bitmap);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
@@ -100,6 +105,12 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                     productsPrepped.clear();
                     productsPrepped.addAll(newProducts);
                     adapter.notifyDataSetChanged();
+
+                    Log.d("volley", "should be setting visibilities..");
+
+//                    loader.setVisibility(View.GONE);
+                    estBrandImage.setVisibility(View.VISIBLE);
+                    estDetail.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
