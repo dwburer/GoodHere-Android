@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ExpandableListView
+    <ListView
+        android:id="@+id/lv_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:id="@+id/lv_search" />
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

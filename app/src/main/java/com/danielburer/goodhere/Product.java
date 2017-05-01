@@ -1,20 +1,18 @@
 package com.danielburer.goodhere;
 
-/**
- * Created by daniel on 4/29/17.
- */
-
 public class Product {
     private String name;
     private String owner;
     private int pk;
     private int votes;
+    private int score;
 
-    public Product(String name, String owner, int pk, int votes) {
+    public Product(String name, String owner, int pk, int votes, int score) {
         this.name = name;
         this.owner = owner;
         this.pk = pk;
         this.votes = votes;
+        this.score = score;
     }
 
     public String getName() {
@@ -31,6 +29,10 @@ public class Product {
 
     public int getVotes() {
         return votes;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override

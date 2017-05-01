@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -75,8 +77,9 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                         String name = newProd.getString("name");
                         String owner = newProd.getString("owner");
                         int pk = newProd.getInt("pk");
-                        int votes = newProd.getInt("votes");
-                        newProducts.add(new Product(name, owner, pk, votes));
+                        int votes = newProd.getInt("get_votes");
+                        int score = newProd.getInt("get_score");
+                        newProducts.add(new Product(name, owner, pk, votes, score));
                     }
 
                     String imageUrl = response.getString("brand_image");
@@ -84,6 +87,9 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                     try {
                         ImageView i = (ImageView)findViewById(R.id.brand_image);
                         Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
+
+//                        FrameLayout brandImageContainer = (FrameLayout)findViewById(R.id.brand_image_container);
+//                        brandImageContainer.setBackground(new BitmapDrawable(getResources(), bitmap));
                         i.setImageBitmap(bitmap);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();

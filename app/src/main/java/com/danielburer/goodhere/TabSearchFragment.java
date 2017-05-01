@@ -1,7 +1,6 @@
 package com.danielburer.goodhere;
 
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,13 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -35,12 +34,9 @@ import java.util.Map;
 
 public class TabSearchFragment extends Fragment {
 
-    // TODO: real names for these
-    ExpandableListView expandableListView;
-    EstablishmentExpandableListAdapter expandableListAdapter;
-    List<String> expandableListTitle;
-    HashMap<String, Integer> expandableListPk;
-    HashMap<String, List<String>> expandableListDetail;
+    ListView estListView;
+    ArrayList<Establishment> establishments;
+    ArrayAdapter<Establishment> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,24 +47,19 @@ public class TabSearchFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        expandableListView = (ExpandableListView) getView().findViewById(R.id.lv_search);
-        expandableListDetail = ExpandableListDataPump.getData();
-        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
-        expandableListPk = new HashMap<>();
-        expandableListAdapter = new EstablishmentExpandableListAdapter(getActivity(), expandableListTitle, expandableListPk, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
+        estListView = (ListView) getView().findViewById(R.id.lv_search);
+        establishments = new ArrayList<>();
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, establishments);
+        estListView.setAdapter(adapter);
 
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
+        estListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        expandableListTitle.get(groupPosition) + " List Expanded. PK: " + expandableListPk.get(expandableListTitle.get(groupPosition)),
-                        Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // Intent for the activity to open when user selects the notification
                 Intent detailsIntent = new Intent(getActivity(), EstablishmentDetailActivity.class);
-                detailsIntent.putExtra("establishmentPK", expandableListPk.get(expandableListTitle.get(groupPosition)));
+                detailsIntent.putExtra("establishmentPK", adapter.getItem(position).getPk());
                 Intent mainIntent = new Intent(getActivity(), MainTabActivity.class);
 
                 // Use TaskStackBuilder to build the back stack and get the PendingIntent
@@ -87,33 +78,7 @@ public class TabSearchFragment extends Fragment {
                 } catch (PendingIntent.CanceledException e) {
                     e.printStackTrace();
                 }
-            }
-        });
 
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        expandableListTitle.get(groupPosition) + " List Collapsed.",
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                Toast.makeText(
-                        getActivity().getApplicationContext(),
-                        expandableListTitle.get(groupPosition)
-                                + " -> "
-                                + expandableListDetail.get(
-                                expandableListTitle.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT
-                ).show();
-                return false;
             }
         });
 
@@ -131,37 +96,22 @@ public class TabSearchFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        ArrayList<String> responseTitles = new ArrayList<>();
-                        HashMap<String, Integer> responsePks = new HashMap<>();
-                        HashMap<String, List<String>> reponseListDetail = new HashMap<>();
+                        ArrayList<Establishment> responseEsts = new ArrayList<>();
 
                         try {
                             JSONArray data = response.getJSONArray("results");
                             for(int i = 0; i < data.length(); i++) {
 
                                 JSONObject establishment = data.getJSONObject(i);
-                                String title = establishment.getString("name");
+                                String name = establishment.getString("name");
+                                int pk = establishment.getInt("pk");
 
-                                ArrayList<String> products = new ArrayList<>();
-                                JSONArray responseProducts = establishment.getJSONArray("products");
-                                for(int j = 0; j < responseProducts.length(); j++) {
-                                    products.add(responseProducts.getString(j));
-                                }
-
-                                reponseListDetail.put(title, products);
-                                responsePks.put(title, establishment.getInt("pk"));
+                                responseEsts.add(new Establishment(name, pk));
                             }
 
-                            responseTitles.clear();
-                            responseTitles.addAll(reponseListDetail.keySet());
-
-                            expandableListTitle.clear();
-                            expandableListTitle.addAll(responseTitles);
-                            expandableListPk.clear();
-                            expandableListPk.putAll(responsePks);
-                            expandableListDetail.clear();
-                            expandableListDetail.putAll(reponseListDetail);
-                            expandableListAdapter.notifyDataSetChanged();
+                            establishments.clear();
+                            establishments.addAll(responseEsts);
+                            adapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
