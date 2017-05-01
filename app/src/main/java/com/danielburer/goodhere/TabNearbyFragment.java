@@ -83,7 +83,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
     Place selectedPlace;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_nearby_fragment, container, false);
@@ -391,9 +390,15 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
                 selectedPlace = PlacePicker.getPlace(this.getContext(),data);
 
-                String toast = String.format("Place: %s", selectedPlace.getName());
+                //String toast = String.format("Place: %s", selectedPlace.getName());
+
+                String toast = "Place: " + selectedPlace.getName() + "\n"
+                + selectedPlace.getAddress() + "\n";
 
                 Toast.makeText(this.getContext(),toast, Toast.LENGTH_LONG).show();
+
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedPlace.getLatLng(),DEFAULT_ZOOM));
+                
             }
 
         }
