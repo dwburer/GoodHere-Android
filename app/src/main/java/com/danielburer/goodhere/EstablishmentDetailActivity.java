@@ -77,8 +77,9 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                         String name = newProd.getString("name");
                         String owner = newProd.getString("owner");
                         int pk = newProd.getInt("pk");
-                        int votes = newProd.getInt("votes");
-                        newProducts.add(new Product(name, owner, pk, votes));
+                        int votes = newProd.getInt("get_votes");
+                        int score = newProd.getInt("get_score");
+                        newProducts.add(new Product(name, owner, pk, votes, score));
                     }
 
                     String imageUrl = response.getString("brand_image");

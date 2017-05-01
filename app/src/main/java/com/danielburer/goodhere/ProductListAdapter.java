@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +67,7 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
         holder.product = items.get(position);
 
         holder.name = (TextView)row.findViewById(R.id.product_name);
-        holder.score = (TextView)row.findViewById(R.id.product_score);
+        holder.score = (ProgressBar) row.findViewById(R.id.product_score);
         holder.voteUp = (Button)row.findViewById(R.id.btn_vote_up);
         holder.voteDown = (Button)row.findViewById(R.id.btn_vote_down);
 
@@ -78,7 +79,8 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
 
     private void setupItem(final ProductHolder holder) {
         holder.name.setText(holder.product.getName());
-        holder.score.setText(String.valueOf(holder.product.getVotes()));
+        holder.score.setMax(holder.product.getVotes());
+        holder.score.setProgress(holder.product.getScore());
         holder.voteUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +90,7 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
         holder.voteDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                patchVote(holder.product, -1);
+                patchVote(holder.product, 0);
             }
         });
     }
@@ -96,17 +98,17 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
     // Not sure if this method belongs in the adapter class, or if we should just be setting onClick
     // Listeners to some version of this in the EstablishmentDetailActivity - may make notifying
     // changed data easier.
-    private void patchVote(final Product product, final int vote) {
+    private void patchVote(final Product product, final int voteType) {
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String base_url= sharedPref.getString(context.getString(R.string.server_api_url), "");
-        String query_url = String.format("%sproducts/%d/", base_url, product.getPk());
+        String query_url = String.format("%svotes/", base_url);
 
         Map<String, String> params = new HashMap<>();
-        params.put("pk", Integer.toString(product.getPk()));
-        params.put("votes", Integer.toString(product.getVotes() + vote));
+        params.put("product", Integer.toString(product.getPk()));
+        params.put("type", Integer.toString(voteType));
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.PATCH, query_url, new JSONObject(params), new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, query_url, new JSONObject(params), new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -138,7 +140,7 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
     private static class ProductHolder {
         Product product;
         TextView name;
-        TextView score;
+        ProgressBar score;
         Button voteUp;
         Button voteDown;
     }
