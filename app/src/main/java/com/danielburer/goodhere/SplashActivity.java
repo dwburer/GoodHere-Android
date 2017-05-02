@@ -32,6 +32,9 @@ public class SplashActivity extends AppCompatActivity {
     };
     private static final int NETWORK_PERMISSIONS_CALLBACK = 99;
 
+    private final static int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private boolean mLocationPermissionGranted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,18 @@ public class SplashActivity extends AppCompatActivity {
                         goMain(SplashActivity.this);
                     }
                 }, 2000);
+
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+            mLocationPermissionGranted = true;
+        }
+
+        else {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+
 
     }
 
