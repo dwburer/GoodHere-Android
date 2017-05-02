@@ -17,7 +17,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     private final FragmentManager mFragmentManager;
     private int mNumOfTabs;
 
-    private ProfilePageListener listener = new ProfilePageListener();
     private Fragment profileFragment;
     private Bundle profileFragmentArgs = new Bundle();
     private Context mContext;
@@ -26,7 +25,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         mFragmentManager = fm;
-//        profileFragmentArgs.putSerializable("listener", listener);
     }
 
     /**
@@ -86,18 +84,4 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         return mNumOfTabs;
     }
 
-    // Not sure if this is entirely needed yet.
-    @Override
-    public int getItemPosition(Object object)
-    {
-        if (object instanceof TabProfileFragmentDefault &&
-                profileFragment instanceof TabProfileFragmentAuthenticated) {
-            return POSITION_NONE;
-        }
-        if (object instanceof TabProfileFragmentAuthenticated &&
-                profileFragment instanceof TabProfileFragmentDefault) {
-            return POSITION_NONE;
-        }
-        return POSITION_UNCHANGED;
-    }
 }

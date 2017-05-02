@@ -92,13 +92,6 @@ public class SplashActivity extends AppCompatActivity {
 
         int temporary = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
-//                != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)
-//                        != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE)
-//                        != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this, NETWORK_PERMISSIONS, NETWORK_PERMISSIONS_CALLBACK);
 
 //        }

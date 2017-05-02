@@ -77,14 +77,7 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
     private static final String KEY_LOCATION = "location";
 
     //Place API
-    private final int mMaxEntries = 5;
-    private String[] mLikelyPlaceNames = new String[mMaxEntries];
-    private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
-    private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
-    private LatLng[] mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-
     int PLACE_PICKER_REQUEST = 1;
-
     Place selectedPlace;
 
     @Override
@@ -206,37 +199,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
     }
 
-    private void getDeviceLocation(){
-        if(ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED){
-            mLocationPermissionGranted = true;
-        }
-
-        else {
-            ActivityCompat.requestPermissions(this.getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-
-        if(mLocationPermissionGranted){
-            mLastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-
-        if(mCameraPosition != null){
-            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        }
-
-        else if(mLastKnownLocation != null){
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(),
-                    mLastKnownLocation.getLatitude()),DEFAULT_ZOOM));
-        }
-
-        else {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation,DEFAULT_ZOOM));
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
-
-    }
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
 
@@ -248,102 +210,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                     mLocationPermissionGranted = true;
                 }
             }
-        }
-
-        updateLocationUI();
-
-    }
-
-    private void showCurrentPlace(){
-
-        if(googleMap == null){
-            return;
-        }
-
-        if(mLocationPermissionGranted){
-            @SuppressWarnings("MissingPermission")
-            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                    .getCurrentPlace(mGoogleApiClient, null);
-
-            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-                @Override
-                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-                    int i = 0;
-                    mLikelyPlaceNames = new String[mMaxEntries];
-                    mLikelyPlaceAddresses = new String[mMaxEntries];
-                    mLikelyPlaceAttributions = new String[mMaxEntries];
-                    mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-
-                    for(PlaceLikelihood placeLikelihood : likelyPlaces){
-                        mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                        mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace().getAddress();
-                        mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace().getAttributions();
-                        mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                        i++;
-
-                        if(i > (mMaxEntries - 1)){
-                            break;
-                        }
-                    }
-
-                    likelyPlaces.release();
-                    openPlacesDialog();
-
-                }
-            });
-        }
-
-        else {
-            googleMap.addMarker(new MarkerOptions().title(getString(R.string.default_google_button_text))
-            .position(mDefaultLocation).snippet(getString(R.string.default_google_button_text)));
-        }
-
-    }
-
-
-    private void openPlacesDialog(){
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                String marketSnippet = mLikelyPlaceAddresses[which];
-
-                if(mLikelyPlaceAttributions[which] != null){
-                    marketSnippet += "\n" + mLikelyPlaceAttributions[which];
-                }
-
-                googleMap.addMarker(new MarkerOptions().title(mLikelyPlaceNames[which])
-                .position(markerLatLng).snippet(marketSnippet));
-
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,DEFAULT_ZOOM));
-            }
-        };
-
-        AlertDialog dialog = new AlertDialog.Builder(this.getContext()).setTitle("Pick Place")
-                .setItems(mLikelyPlaceNames,listener).show();
-    }
-
-    private void updateLocationUI(){
-
-        if(googleMap == null){
-            return;
-        }
-
-        if(ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        }
-
-        if(mLocationPermissionGranted) {
-            googleMap.setMyLocationEnabled(true);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        }
-        else {
-            googleMap.setMyLocationEnabled(false);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mLastKnownLocation = null;
         }
 
     }
@@ -401,8 +267,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
 
                 selectedPlace = PlacePicker.getPlace(this.getContext(),data);
 
-                //String toast = String.format("Place: %s", selectedPlace.getName());
-
                 String toast = "Place: " + selectedPlace.getName() + "\n"
                 + selectedPlace.getAddress() + "\n" + selectedPlace.getId();
 
@@ -413,12 +277,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
             }
 
         }
-
-    }
-
-    @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
 
     }
 

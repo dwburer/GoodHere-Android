@@ -56,7 +56,4 @@ public class QueueSingleton {
         getRequestQueue().add(req);
     }
 
-    public ImageLoader getImageLoader() {
-        return mImageLoader;
-    }
 }
