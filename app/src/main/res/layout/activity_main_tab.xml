@@ -1,38 +1,40 @@
-<RelativeLayout
-    android:id="@+id/main_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainTabActivity">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:elevation="6dp"
-        android:minHeight="?android:attr/actionBarSize"
-        android:theme="@style/AppTheme"
-        android:visibility="visible"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:elevation="6dp"
+            app:srcCompat="@drawable/goodhere" />
+    </LinearLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
         android:background="@color/colorPrimary"
         android:elevation="6dp"
+        app:tabIndicatorColor="@color/colorPrimaryDark"
         app:tabSelectedTextColor="?android:attr/textColorPrimaryInverse"
         app:tabTextColor="?android:attr/textColorPrimaryInverse" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/tab_layout"/>
+        android:layout_height="fill_parent" />
 
-</RelativeLayout>
+</LinearLayout>

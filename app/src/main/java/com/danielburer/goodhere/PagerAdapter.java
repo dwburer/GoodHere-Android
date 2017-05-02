@@ -7,10 +7,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
-import android.view.View;
-
-import java.io.Serializable;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
@@ -53,11 +49,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-
                 return new TabSearchFragment();
 
             case 1:
-
                 boolean authenticated = sharedPref.getBoolean(mContext.getString(R.string.client_authenticated_key), false);
 
                 if (profileFragment == null) {
@@ -66,6 +60,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 }
 
                 return profileFragment;
+
             default:
                 return null;
         }
@@ -80,7 +75,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         return mNumOfTabs;
     }
 
-    // Not sure if this is entirely needed yet.
     @Override
     public int getItemPosition(Object object)
     {

@@ -7,11 +7,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -37,7 +34,6 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
 
     private TextView estName;
     private ImageView estBrandImage;
-    private LinearLayout estDetail;
 
     private ArrayList<Product> productsPrepped;
     private ListView products;
@@ -49,13 +45,12 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_establishment_detail);
 
         productsPrepped = new ArrayList<>();
-        products = (ListView) findViewById(R.id.lv_estDetailProducts);
-        adapter = new ProductListAdapter(this, R.layout.atom_pay_list_item, productsPrepped);
+        products = (ListView) findViewById(R.id.lv_est_detail_products);
+        adapter = new ProductListAdapter(this, R.layout.vote_product_list_item, productsPrepped);
         products.setAdapter(adapter);
 
-        estName = (TextView) findViewById(R.id.tv_estDetailName);
+        estName = (TextView) findViewById(R.id.tv_est_detail_name);
         estBrandImage = (ImageView)findViewById(R.id.brand_image);
-        estDetail = (LinearLayout) findViewById(R.id.product_list);
 
         queryEstablishments();
     }
@@ -65,7 +60,6 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
         String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
         String query_url = String.format("%sestablishments/%d/", base_url, getIntent().getIntExtra("establishmentPK", 0));
 
-        // Query establishment for details and products.
         JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.GET, query_url, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -89,9 +83,8 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                     String imageUrl = response.getString("brand_image");
 
                     try {
-                        ImageView i = (ImageView)findViewById(R.id.brand_image);
                         Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
-                        i.setImageBitmap(bitmap);
+                        estBrandImage.setImageBitmap(bitmap);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -102,8 +95,6 @@ public class EstablishmentDetailActivity extends AppCompatActivity {
                     productsPrepped.clear();
                     productsPrepped.addAll(newProducts);
                     adapter.notifyDataSetChanged();
-
-                    Log.d("volley", "should be setting visibilities..");
 
                 } catch (JSONException e) {
                     e.printStackTrace();

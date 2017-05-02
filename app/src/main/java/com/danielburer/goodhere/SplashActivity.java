@@ -2,26 +2,17 @@ package com.danielburer.goodhere;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.amazonaws.mobile.AWSMobileClient;
-import com.amazonaws.mobilehelper.auth.IdentityManager;
-import com.amazonaws.mobilehelper.auth.IdentityProvider;
-import com.amazonaws.mobilehelper.auth.StartupAuthErrorDetails;
-import com.amazonaws.mobilehelper.auth.StartupAuthResult;
-import com.amazonaws.mobilehelper.auth.StartupAuthResultHandler;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -31,15 +22,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Get basic permissions here...?
+ * Preliminaries and setup.
  */
 public class SplashActivity extends AppCompatActivity {
 
@@ -124,17 +111,22 @@ public class SplashActivity extends AppCompatActivity {
         QueueSingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
 
-    /** Go to the main activity. */
     private void goMain(final Activity callingActivity) {
-        callingActivity.startActivity(new Intent(callingActivity, MainTabActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-        callingActivity.finish();
+
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                callingActivity.startActivity(new Intent(callingActivity, MainTabActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                callingActivity.finish();
+            }
+        }, 3000);
+
+
     }
 
-    // TODO: Make this much much much more compliant
+    // TODO: Make this much more compliant.
     void requestPermissions() {
-        String temp = Manifest.permission.INTERNET;
-        int temporary = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
         ActivityCompat.requestPermissions(this, NETWORK_PERMISSIONS, NETWORK_PERMISSIONS_CALLBACK);
     }
 }

@@ -23,7 +23,7 @@
         android:visibility="visible">
 
         <TextView
-            android:id="@+id/tv_estDetailName"
+            android:id="@+id/tv_est_detail_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
@@ -31,7 +31,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <ListView
-            android:id="@+id/lv_estDetailProducts"
+            android:id="@+id/lv_est_detail_products"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>

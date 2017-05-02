@@ -28,7 +28,7 @@
             style="@style/Widget.AppCompat.Button.Small"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@android:color/holo_red_light"
+            android:background="?attr/colorPrimary"
             android:text="-"
             android:textColor="?android:attr/textColorPrimaryInverse" />
 
@@ -46,7 +46,7 @@
             style="@style/Widget.AppCompat.Button.Small"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@android:color/holo_blue_light"
+            android:background="@color/colorAccent"
             android:text="+"
             android:textColor="?android:attr/textColorPrimaryInverse" />
 

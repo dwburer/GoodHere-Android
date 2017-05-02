@@ -21,17 +21,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,9 +37,7 @@ public class TabProfileFragmentAuthenticated extends Fragment {
     TextView userEmail;
     ImageView profilePicture;
 
-    public TabProfileFragmentAuthenticated() {
-
-    }
+    public TabProfileFragmentAuthenticated() { }
 
     @SuppressLint("ValidFragment")
     public TabProfileFragmentAuthenticated(PagerAdapter.ProfilePageListener listener) {
@@ -53,7 +46,6 @@ public class TabProfileFragmentAuthenticated extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("profile", "authenticated");
         return inflater.inflate(R.layout.tab_profile_fragment_authenticated, container, false);
     }
 
@@ -61,9 +53,9 @@ public class TabProfileFragmentAuthenticated extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userName = (TextView)getView().findViewById(R.id.tvName);
-        userEmail = (TextView)getView().findViewById(R.id.tvEmail);
-        profilePicture = (ImageView) getView().findViewById(R.id.profilePicture);
+        userName = (TextView)getView().findViewById(R.id.tv_name);
+        userEmail = (TextView)getView().findViewById(R.id.tv_email);
+        profilePicture = (ImageView) getView().findViewById(R.id.iv_profile_picture);
 
         getProfile();
     }
@@ -78,7 +70,6 @@ public class TabProfileFragmentAuthenticated extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-
                     JSONObject userProfile = response.getJSONArray("results").getJSONObject(0);
                     JSONObject user = userProfile.getJSONObject("user");
                     userName.setText(user.getString("username"));

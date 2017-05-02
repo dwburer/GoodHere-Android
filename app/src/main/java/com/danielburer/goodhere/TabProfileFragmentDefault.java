@@ -38,9 +38,7 @@ public class TabProfileFragmentDefault extends Fragment {
     private EditText username, password;
     private Button login;
 
-    public TabProfileFragmentDefault() {
-
-    }
+    public TabProfileFragmentDefault() { }
 
     @SuppressLint("ValidFragment")
     public TabProfileFragmentDefault(PagerAdapter.ProfilePageListener listener) {
@@ -60,7 +58,6 @@ public class TabProfileFragmentDefault extends Fragment {
         username = (EditText) getView().findViewById(R.id.et_username);
         password = (EditText) getView().findViewById(R.id.et_password);
         login = (Button) getView().findViewById(R.id.btn_login);
-
 
         password.setImeActionLabel("GO", KeyEvent.KEYCODE_ENTER);
         password.setOnEditorActionListener(new TextView.OnEditorActionListener() {

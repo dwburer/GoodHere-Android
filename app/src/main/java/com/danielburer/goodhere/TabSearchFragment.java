@@ -58,41 +58,19 @@ public class TabSearchFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        nearby = (Button) getView().findViewById(R.id.btn_nearby);
 
         estListView = (ListView) getView().findViewById(R.id.lv_search);
         establishments = new ArrayList<>();
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, establishments);
         estListView.setAdapter(adapter);
-
         estListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                // Intent for the activity to open when user selects the notification
-                Intent detailsIntent = new Intent(getActivity(), EstablishmentDetailActivity.class);
-                detailsIntent.putExtra("establishmentPK", adapter.getItem(position).getPk());
-                Intent mainIntent = new Intent(getActivity(), MainTabActivity.class);
-
-                // Use TaskStackBuilder to build the back stack and get the PendingIntent
-                PendingIntent pendingIntent =
-                        TaskStackBuilder.create(getActivity())
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
-                                .addNextIntentWithParentStack(mainIntent)
-                                .addNextIntentWithParentStack(detailsIntent)
-                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
-                builder.setContentIntent(pendingIntent);
-                try {
-                    pendingIntent.send();
-                } catch (PendingIntent.CanceledException e) {
-                    e.printStackTrace();
-                }
+                queueDetailIntent(adapter.getItem(position).getPk());
             }
         });
 
+        nearby = (Button) getView().findViewById(R.id.btn_nearby);
         nearby.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,11 +85,12 @@ public class TabSearchFragment extends Fragment {
         });
 
         search = (SearchView) getView().findViewById(R.id.sv_search);
+        search.setQueryHint("Search all restaurants");
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (query.trim().length() > 0)
-                    getEstablishments(query);
+                    queryEstablishments(query);
                 else {
                     establishments.clear();
                     adapter.notifyDataSetChanged();
@@ -123,7 +102,7 @@ public class TabSearchFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.trim().length() > 0)
-                    getEstablishments(newText);
+                    queryEstablishments(newText);
                 else {
                     establishments.clear();
                     adapter.notifyDataSetChanged();
@@ -148,6 +127,30 @@ public class TabSearchFragment extends Fragment {
         }
     }
 
+    public void queueDetailIntent(int pk) {
+        // Intent for the activity to open when user selects the notification
+        Intent detailsIntent = new Intent(getActivity(), EstablishmentDetailActivity.class);
+        detailsIntent.putExtra("establishmentPK", pk);
+        Intent mainIntent = new Intent(getActivity(), MainTabActivity.class);
+
+        // Use TaskStackBuilder to build the back stack and get the PendingIntent
+        PendingIntent pendingIntent =
+                TaskStackBuilder.create(getActivity())
+                        // add all of DetailsActivity's parents to the stack,
+                        // followed by DetailsActivity itself
+                        .addNextIntentWithParentStack(mainIntent)
+                        .addNextIntentWithParentStack(detailsIntent)
+                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
+        builder.setContentIntent(pendingIntent);
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getEstablishmentFromPlacesId(String id) {
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
@@ -161,29 +164,7 @@ public class TabSearchFragment extends Fragment {
                         try {
                             JSONObject establishment = response.getJSONArray("results").getJSONObject(0);
                             int pk = establishment.getInt("pk");
-
-                            // Intent for the activity to open when user selects the notification
-                            Intent detailsIntent = new Intent(getActivity(), EstablishmentDetailActivity.class);
-                            detailsIntent.putExtra("establishmentPK", pk);
-                            Intent mainIntent = new Intent(getActivity(), MainTabActivity.class);
-
-                            // Use TaskStackBuilder to build the back stack and get the PendingIntent
-                            PendingIntent pendingIntent =
-                                    TaskStackBuilder.create(getActivity())
-                                            // add all of DetailsActivity's parents to the stack,
-                                            // followed by DetailsActivity itself
-                                            .addNextIntentWithParentStack(mainIntent)
-                                            .addNextIntentWithParentStack(detailsIntent)
-                                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
-                            builder.setContentIntent(pendingIntent);
-                            try {
-                                pendingIntent.send();
-                            } catch (PendingIntent.CanceledException e) {
-                                e.printStackTrace();
-                            }
-
+                            queueDetailIntent(pk);
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), "Location not yet in GoodHere database!", Toast.LENGTH_LONG).show();
                         }
@@ -210,7 +191,7 @@ public class TabSearchFragment extends Fragment {
         QueueSingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest);
     }
 
-    public void getEstablishments(String query) {
+    public void queryEstablishments(String query) {
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String base_url= sharedPref.getString(getString(R.string.server_api_url), "");
         String query_url = String.format("%ssearch/?query=%s", base_url, query);
