@@ -1,5 +1,6 @@
 package com.danielburer.goodhere;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,11 +9,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,14 +34,22 @@ import java.util.Map;
 
 public class TabProfileFragmentDefault extends Fragment {
 
-    static ProfileFragmentListener profileListener;
+    ProfileFragmentListener profileListener;
     private EditText username, password;
     private Button login;
 
+    public TabProfileFragmentDefault() {
+
+    }
+
+    @SuppressLint("ValidFragment")
+    public TabProfileFragmentDefault(PagerAdapter.ProfilePageListener listener) {
+        this.profileListener = listener;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        profileListener = (ProfileFragmentListener) args.get("listener");
         return inflater.inflate(R.layout.tab_profile_fragment_default, container, false);
     }
 
@@ -48,6 +60,18 @@ public class TabProfileFragmentDefault extends Fragment {
         username = (EditText) getView().findViewById(R.id.et_username);
         password = (EditText) getView().findViewById(R.id.et_password);
         login = (Button) getView().findViewById(R.id.btn_login);
+
+
+        password.setImeActionLabel("GO", KeyEvent.KEYCODE_ENTER);
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
+                login();
+                return false;
+            }
+        });
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override

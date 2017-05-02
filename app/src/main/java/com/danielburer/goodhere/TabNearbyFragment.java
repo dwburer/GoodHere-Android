@@ -116,14 +116,6 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 }
 
                 googleMap.setMyLocationEnabled(true);
-
-                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        closePlace();
-                    }
-                });
-
             }
         });
 
@@ -135,6 +127,13 @@ public class TabNearbyFragment extends Fragment implements OnMapReadyCallback, G
                 .build();
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        closePlace();
     }
 
     @Override

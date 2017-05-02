@@ -13,22 +13,21 @@
     tools:context="com.danielburer.goodhere.SplashActivity"
     tools:showIn="@layout/activity_splash">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:layout_alignParentTop="true" />
-
     <TextView
         android:id="@+id/tvLoad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:text="Loading..."
-        android:textColor="@color/cast_expanded_controller_background_color"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvLoad"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp" />
 </RelativeLayout>

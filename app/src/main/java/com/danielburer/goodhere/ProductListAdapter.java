@@ -49,11 +49,15 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
     private Context context;
     private View internalView;
 
+    private final SharedPreferences sharedPref;
+
     public ProductListAdapter(Context context, int layoutResourceId, List<Product> items) {
         super(context, layoutResourceId, items);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.items = items;
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @NonNull
@@ -85,13 +89,19 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
         holder.voteUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                patchVote(holder.product, 1);
+                if(sharedPref.getBoolean(context.getString(R.string.client_authenticated_key), false))
+                    patchVote(holder.product, 1);
+                else
+                    Toast.makeText(context.getApplicationContext(), "You must be logged in to vote!", Toast.LENGTH_SHORT).show();
             }
         });
         holder.voteDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                patchVote(holder.product, 0);
+                if(sharedPref.getBoolean(context.getString(R.string.client_authenticated_key), false))
+                    patchVote(holder.product, 0);
+                else
+                    Toast.makeText(context.getApplicationContext(), "You must be logged in to vote!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -101,7 +111,6 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
     // changed data easier.
     private void patchVote(final Product product, final int voteType) {
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String base_url= sharedPref.getString(context.getString(R.string.server_api_url), "");
         String query_url = String.format("%svotes/", base_url);
 

@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btn_nearby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="search nearby" />
 
     <SearchView
         android:id="@+id/sv_search"
         android:layout_width="match_parent"
-        android:layout_height="64dp" />
+        android:layout_height="64dp">
+
+    </SearchView>
 
     <ListView
         android:id="@+id/lv_search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/sv_search" />
-</RelativeLayout>
+        android:layout_height="match_parent" />
+</LinearLayout>
