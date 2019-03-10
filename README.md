@@ -1,24 +1,21 @@
-# GoodHere
-CSCI-5331 Final Project
+# Summary
+GoodHere is a lightweight crowd-reviewing social network for individual dishes/services at businesses and establishments. Rather than rating a business as a whole, the app functions as a service to breakdown more specifically what products customers prefer based on community-sourced ratings.
 
-### Lazy man's version of task management (our to-do list):
+Languages and frameworks used:
+ - [Django](https://www.djangoproject.com/) - high-level python web framework used for management of static files and creating database models.
+ - [Django Rest Framework](https://www.django-rest-framework.org/) - Django extension used to query, serialize, and deliver model information.
+ - [Django OAuth Toolkit](https://github.com/jazzband/django-oauth-toolkit) - Django extension for OAuth token data via a REST API.
+ - [Amazon Web Services (AWS)](https://aws.amazon.com/)
+   - [Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) - used for scaling and deployment of GoodHere server backend.
+ - [Google Places API](https://cloud.google.com/maps-platform/places/)
+   - [PlacePicker](https://developers.google.com/places/android-sdk/placepicker)
+ - [Google Volley](https://github.com/google/volley) - library for Android GET and POST HTTP requests.
+ 
+### Screenshots
 
-We'll keep a rough record of changes and tasks here. If you want to add something, just add another line under one of our names.
-
-#### Danny
-- [x] Get voting to work, layout visual framework for UI and outline database models.
-- [ ] Get `GoodHere-Backened` deployed to AWS (Elasic Beanstalk)
-- [ ] Set up database with Amazon RDS - may be handled automatically with EB, probably want to configure ourselves anyway
-- [ ] Polish up `EstablishmentDetailView`, including voting interface.
-- [ ] Allow users to vote only once. This will require a new `Vote` model to be implemented.
-- [ ] Create UserProfile model, add to endpoint and serializers.
-- [ ] Integrate Google Maps id's into the Establishment model - this depends on Kelvin's progress on maps stuff.
-- [ ] Add search functionality to the List tab - this will probably use DRF's `filter` options.
-
-#### Kelvin
-- [ ] Get the ball rolling on Google Maps integration, etc.
-- [ ] Design the profile tab. This will eventally pull information from the UserProfile endpoint, but until Danny implements it use example values.
-- [ ] Get a splash screen working. This will display for a few seconds while things load, we check for authentication, etc.
-- [ ] General code cleanup - just skim the classes every now and then and make sure there are no glaring issues.
-
-We can move these around or trade off if we get stuck and any point.
+ 
+| ![gh/loading.png](gh/loading.png) | ![gh/login.png](gh/login.png) | ![gh/search.png](gh/search.png) |
+|---|---|---|
+| ![gh/landing.png](gh/landing.png) | ![gh/business_page.png](gh/business_page.png) |  |
+ 
+ 
